@@ -1,1 +1,19 @@
 
+# Ignora dependências
+node_modules/
+
+# Ignora arquivos temporários
+*.log
+npm-debug.log*
+
+# Ignora variáveis de ambiente
+.env
+
+# Ignora configurações do sistema e IDEs
+.DS_Store
+.vscode/
+.idea/
+
+# Ignora pastas do sistema no Windows
+Thumbs.db
+desktop.ini
