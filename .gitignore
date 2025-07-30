@@ -17,3 +17,5 @@ npm-debug.log*
 # Ignora pastas do sistema no Windows
 Thumbs.db
 desktop.ini
+
+test.js

@@ -8,7 +8,9 @@ router.get('/agentes', agentesController.listarAgentes);
 router.get('/agentes/:id', agentesController.buscarPorId);
 router.post('/agentes', agentesController.criarAgente);
 router.put('/agentes/:id', agentesController.atualizarAgente);
-router.patch('/agentes/:id', agentesController.atualizarAgente);
+router.patch('/agentes/:id', agentesController.patchAgente);
+
+
 
 
 router.delete('/agentes/:id', agentesController.deletarAgente);

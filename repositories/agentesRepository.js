@@ -1,79 +1,97 @@
-const { v4: uuidv4, validate: validateUUID } = require('uuid');
-
-const agentes = [];
-
-const cargosValidos = ['inspetor', 'delegado', 'escrivao', 'agente'];
-
-function validarAgentes({ id, nome, dataDeIncorporacao, cargo }) {
-  if (!id || !validateUUID(id)) return 'ID inválido ou ausente (UUID)';
-  if (!nome || typeof nome !== 'string') return 'Nome é obrigatório';
-  if (!dataDeIncorporacao || !/^\d{4}-\d{2}-\d{2}$/.test(dataDeIncorporacao)) {
-    return 'Data de incorporação deve estar no formato YYYY-MM-DD';
-  }
-  if (!cargo || !cargosValidos.includes(cargo)) {
-    return `Cargo inválido. Cargos válidos: ${cargosValidos.join(', ')}`;
-  }
-  return null;
-}
+const { v4: uuidv4, validate: validateUUID } = require('uuid')
+const { validarAgenteOuLancarErro } = require('../utils/agentesValidation')
+const agentes = [
+  {
+    id: "401bccf5-cf9e-489d-8412-446cd169a0f1",
+    nome: 'João Silva',
+    dataDeIncorporacao: '2019-05-20',
+    cargo: 'delegado',
+  },
+  {
+    id: uuidv4(),
+    nome: 'Maria Oliveira',
+    dataDeIncorporacao: '2020-10-10',
+    cargo: 'inspetor',
+  },
+  {
+    id: uuidv4(),
+    nome: 'Carlos Souza',
+    dataDeIncorporacao: '2018-03-15',
+    cargo: 'escrivao',
+  },
+  {
+    id: uuidv4(),
+    nome: 'Ana Pereira',
+    dataDeIncorporacao: '2021-01-05',
+    cargo: 'agente',
+  },
+  {
+    id: uuidv4(),
+    nome: 'Pedro Santos',
+    dataDeIncorporacao: '2017-12-12',
+    cargo: 'delegado',
+  },
+];
 
 const agentesRepository = {
-
-  criarAgente({ nome, dataDeIncorporacao, cargo }) {
+criarAgente({ nome, dataDeIncorporacao, cargo }) {
     const id = uuidv4();
-    const agente = { id, nome, dataDeIncorporacao, cargo };
-    const erro = validarAgentes(agente);
-    if (erro) return { erro };
+    const agente = { id, nome, dataDeIncorporacao, cargo }
 
-    agentes.push(agente);
-    return { data: agente };
-  },
+    validarAgenteOuLancarErro(agente); // lança erro se inválido
 
-  // lista todos os agentes 
+    agentes.push(agente)
+    return { data: agente }
+ },
 
   listaAgentes() {
     return agentes;
-  },
-
-
-
-// busca usuario pelo id 
+},
 
   buscaPeloId(id) {
-    if (!validateUUID(id)) return null;
+    if (!validateUUID(id)) return null
     return agentes.find(p => p.id === id) || null;
   },
 
+ update(id, dadosAtualizados) {
+    if (!validateUUID(id)) {
+      const erro = new Error('ID inválido');
+      erro.statusCode = 400;
+      throw erro
+    }
 
-  // atualiza dados do usuario 
+    const index = agentes.findIndex(p => p.id === id)
+    if (index === -1) {
+      const erro = new Error('Policial não encontrado')
+      erro.statusCode = 404;
+      throw erro;
+    }
 
-  update(id, dadosAtualizados) {
-    if (!validateUUID(id)) return { erro: 'ID inválido' };
+    const atualizado = { ...agentes[index], ...dadosAtualizados, id }
 
-    const index = agentes.findIndex(p => p.id === id);
-    if (index === -1) return { erro: 'Policial não encontrado' };
+    validarAgenteOuLancarErro(atualizado); // valida agente atualizado
 
-    const policialAtual = agentes[index];
-    const atualizado = { ...policialAtual, ...dadosAtualizados, id }; // mantém id
+    agentes[index] = atualizado
+    return { data: atualizado }
+},
 
-    const erro = validarAgentes(atualizado);
-    if (erro) return { erro };
+  deletar(id) {
+    if (!validateUUID(id)) {
+      const erro = new Error('ID inválido')
+      erro.statusCode = 400;
+      throw erro;
+    }
 
-    agentes[index] = atualizado;
-    return { data: atualizado };
+    const index = agentes.findIndex(p => p.id === id)
+    if (index === -1) {
+      const erro = new Error('Policial não encontrado')
+      erro.statusCode = 404;
+      throw erro;
+    }
+
+    agentes.splice(index, 1)
+    return { data: true }
   },
-
-//deleta o usuario 
-
-  delete(id) {
-    if (!validateUUID(id)) return { erro: 'ID inválido' };
-
-    const index = agentes.findIndex(p => p.id === id);
-    if (index === -1) return { erro: 'Policial não encontrado' };
-
-    agentes.splice(index, 1);
-    return { data: true };
-  },
-};
-
+}
 
 module.exports = agentesRepository;
