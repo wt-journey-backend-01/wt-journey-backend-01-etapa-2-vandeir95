@@ -125,13 +125,13 @@ function patchCaso(req, res, next) {
 const deletarCaso = (req, res, next) => {
   const { id } = req.params;
   try {
-    const deleted = casosRepository.remove(id);
-    if (!deleted) return next(new ApiError("casos não encontrado.", 404));
-    res.status(204).send();
+    casosRepository.remove(id); // vai lançar erro se não existir
+    res.status(204).send(); // sucesso: No Content
   } catch (error) {
-    next(new ApiError("Erro ao deletar caso."));
+    next(new ApiError(error.message, error.statusCode || 500));
   }
 };
+
 
 module.exports = {
   listarCasos,

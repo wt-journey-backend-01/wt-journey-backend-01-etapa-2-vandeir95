@@ -9,8 +9,8 @@ const agentesRouter = require("./routes/agentesRoutes")
 const casosRouter = require("./routes/casosRoutes")
 app.use(express.json())
 
-app.use(agentesRouter)
-app.use('/casos',casosRouter)
+app.use('/agentes', agentesRouter)
+app.use('/casos', casosRouter)
 
 
 app.use(errorHandler)

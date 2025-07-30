@@ -52,7 +52,8 @@ function atualizarAgente(req, res, next) {
     const result = agentesRepository.update(id, data);
     res.status(200).json(result.data);
   } catch (error) {
-    next(new ApiError(error.message, 400));
+    const status = error.statusCode || 400;
+    next(new ApiError(error.message, status));
   }
 }
 
