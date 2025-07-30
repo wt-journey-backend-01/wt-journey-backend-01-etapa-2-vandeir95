@@ -88,29 +88,29 @@ function buscarCasosPorAgente(req, res, next) {
   }
 }
 
-const criarCasos = (req, res, next) => {
+const criarCaso = (req, res, next) => {
   try {
     const data = casoCriacaoSchema.parse(req.body);
-    const casoCriado = casosRepository.criarCasos(data);
+    const casoCriado = casosRepository.criarCaso(data);
     res.status(201).json(casoCriado);
   } catch (error) {
     next(new ApiError(error.message, 400));
   }
 };
 
-const atualizarCasos = (req, res, next) => {
+const atualizarCaso = (req, res, next) => {
   const { id } = req.params;
   try {
     const data = casoSchema.parse(req.body);
     const updated = casosRepository.update(id, data);
-    if (!updated) return next(new ApiError("casos não encontrado.", 404));
+    if (!updated) return next(new ApiError("caso não encontrado.", 404));
     res.status(200).json(updated.data);
   } catch (error) {
     next(new ApiError(error.message, 400));
   }
 };
 
-function patchCasos(req, res, next) {
+function patchCaso(req, res, next) {
   const { id } = req.params;
   try {
     const parcialSchema = casoSchema.partial().omit({ id: true });
@@ -122,7 +122,7 @@ function patchCasos(req, res, next) {
   }
 }
 
-const deletarCasos = (req, res, next) => {
+const deletarCaso = (req, res, next) => {
   const { id } = req.params;
   try {
     const deleted = casosRepository.remove(id);
@@ -136,10 +136,10 @@ const deletarCasos = (req, res, next) => {
 module.exports = {
   listarCasos,
   buscarPeloId,
-  criarCasos,
-  atualizarCasos,
-  deletarCasos,
-  patchCasos,
+  criarCaso,
+  atualizarCaso,
+  deletarCaso,
+  patchCaso,
   buscarCasosPorAgente,
   buscarAgentePorCaso,
   buscarCasosPorStatus,

@@ -14,7 +14,7 @@ app.use('/casos',casosRouter)
 
 
 app.use(errorHandler)
-const swaggerDocs = require('./swagger.json');
+const swaggerDocs = require('./docs/swagger.json');
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.get("/v1/docs-swagger", (req, res) => {
